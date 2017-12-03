@@ -10,11 +10,9 @@ async function someAsyncFunction(userId) {
     throw new Error("Didn't pass the condition!");
   }
   let userFromDB = await saveToDatabase(transformedUser);
-  try {
-    let verify = await verifyDbResult(userFromDB);
-  } catch (err) {
-    throw new Error ("Database malfunction");
-  }
+  
+  let verify = await verifyDbResult(userFromDB);
+  if (!verify) throw new Error ("Database malfunction");
 
   return userFromDB;
 }
@@ -25,6 +23,7 @@ someAsyncFunction("7fd12fd1-a977-4ace").then(result => {
   console.log(result);
 }).catch(err => {
   console.error(err.message);
+  console.log("Please try again.");
 });
 
 //-- Faking-out support functions that are not essential:
@@ -51,7 +50,14 @@ function checkCondition(user) {
 }
 
 function saveToDatabase(user) {
-  user.source = 'from-database';
+  let errorRate = getRandomFromRange(0, 3);
+  // 1/3 chance of erroring-out:
+  errored = errorRate < 1 ? true : false;
+  
+  if (!errored) {
+    user.source = 'from-database';
+  }
+  
   return fakeAsyncPromise(2, user);
 }
 

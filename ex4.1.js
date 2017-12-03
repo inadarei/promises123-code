@@ -39,6 +39,7 @@ someAsyncFunction("7fd12fd1-a977-4ace").then(result => {
   console.log(result);
 }).catch(err => {
   console.error(err.message);
+  console.log("Please try again.");
 });
 
 //-- Faking-out support functions that are not essential:
@@ -65,7 +66,14 @@ function checkCondition(user) {
 }
 
 function saveToDatabase(user) {
-  user.source = 'from-database';
+  let errorRate = getRandomFromRange(0, 3);
+  // 1/3 chance of erroring-out:
+  errored = errorRate < 1 ? true : false;
+  
+  if (!errored) {
+    user.source = 'from-database';
+  }
+  
   return fakeAsyncPromise(2, user);
 }
 
