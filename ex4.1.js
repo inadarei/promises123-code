@@ -1,4 +1,5 @@
-const Promise = require("bluebird");
+const Promise     = require("bluebird");
+const fakepromise = require("fakepromise");
 
 function someAsyncFunction(userId) {
 
@@ -48,7 +49,7 @@ function lookupUser(userId) {
   let user = {};
   user.id = userId;
   user.something = "somethingProp";
-  return fakeAsyncPromise(1, user);
+  return fakepromise.promise(1000, user);
 }
 
 function transform(something, user) {
@@ -62,7 +63,7 @@ function checkCondition(user) {
   // 2/3 chance of passing:
   passed = passed > 1 ? true : false;
   user.passed = passed;
-  return fakeAsyncPromise(1, user);
+  return fakepromise.promise(1000, user);
 }
 
 function saveToDatabase(user) {
@@ -74,7 +75,7 @@ function saveToDatabase(user) {
     user.source = 'from-database';
   }
   
-  return fakeAsyncPromise(2, user);
+  return fakepromise.promise(2000, user);
 }
 
 function verifyDbResult(user) {
@@ -83,13 +84,4 @@ function verifyDbResult(user) {
 
 function getRandomFromRange(min, max) {
   return Math.random() * (max - min) + min;
-}
-
-function fakeAsyncPromise(delaySecsUpTo, passValue) {
-  let delay = getRandomFromRange(0, delaySecsUpTo) * 1000;
-  return new Promise((resolve) => {
-    setTimeout((passValueArg) => {
-      resolve(passValueArg);
-    }, delay, passValue);
-  });
 }
