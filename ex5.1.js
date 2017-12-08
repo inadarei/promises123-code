@@ -10,7 +10,7 @@ async function someAsyncFunction(userId) {
     throw new Error("Didn't pass the condition!");
   }
   let userFromDB = await saveToDatabase(transformedUser);
-  
+
   let verify = await verifyDbResult(userFromDB);
   if (!verify) throw new Error ("Database malfunction");
 
@@ -18,13 +18,17 @@ async function someAsyncFunction(userId) {
 }
 
 // Executing our test function:
-someAsyncFunction("7fd12fd1-a977-4ace").then(result => {
-  console.log("SUCCESS: ");
-  console.log(result);
-}).catch(err => {
-  console.error(err.message);
-  console.log("Please try again.");
-});
+async function run() {
+  try {
+    const result = await someAsyncFunction("7fd12fd1-a977-4ace");
+    console.log("SUCCESS: ");
+    console.log(result);
+  } catch (err) {
+    console.error(err.message);
+    console.log("Please try again.");
+  }
+}
+run();
 
 //-- Faking-out support functions that are not essential:
 
@@ -53,11 +57,11 @@ function saveToDatabase(user) {
   let errorRate = getRandomFromRange(0, 3);
   // 1/3 chance of erroring-out:
   errored = errorRate < 1 ? true : false;
-  
+
   if (!errored) {
     user.source = 'from-database';
   }
-  
+
   return fakeAsyncPromise(2, user);
 }
 
