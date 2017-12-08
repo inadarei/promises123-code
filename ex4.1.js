@@ -70,11 +70,11 @@ function saveToDatabase(user) {
   let errorRate = getRandomFromRange(0, 3);
   // 1/3 chance of erroring-out:
   errored = errorRate < 1 ? true : false;
-  
+
   if (!errored) {
     user.source = 'from-database';
   }
-  
+
   return fakepromise.promise(2000, user);
 }
 
