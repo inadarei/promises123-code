@@ -25,18 +25,21 @@ async function msa_authors() {
     let author_url = `${base_url}"inauthor:${author}"`;
     author_promises.push(namedRP(author, author_url));
   });
-  
+
   return Promise.all(author_promises);
 }
 
-msa_authors().then(author_responses => {
-  console.log("Final results:");
-  console.log(author_responses);
-})
-.catch(err => {
-  // http request or parsing or something else failed...
-  console.log(err);
-});
+async function run() {
+  try {
+    const author_responses = await msa_authors();
+    console.log("Final results:");
+    console.log(author_responses);
+  } catch (err) {
+    // http request or parsing or something else failed...
+    console.log(err);
+  }
+}
+run();
 
 async function namedRP (name, url) {
   const author_info = await http_get(url);
